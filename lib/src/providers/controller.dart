@@ -26,11 +26,12 @@ import 'package:provider/provider.dart';
 class MDController extends ChangeNotifier {
   /// Creates a [MDController].
   MDController({
-    required List<Widget> items,
+    // required List<Widget> items,
+    required Widget child,
     required MDFocus focus,
     String? initialPageId,
     WidgetBuilder? initialPageBuilder,
-  })  : _items = items,
+  })  : _child = child,
         _focus = focus,
         _selectedPageId = initialPageId,
         _selectedPageBuilder = initialPageBuilder,
@@ -52,12 +53,13 @@ class MDController extends ChangeNotifier {
   /// Route name for the master page.
   static const String masterRouteName = 'master';
 
-  List<Widget> _items;
+  // List<Widget> _items;
+  Widget _child;
 
   /// The list of master widgets.
-  List<Widget> get items => UnmodifiableListView(_items);
-  set items(List<Widget> value) {
-    _items = value;
+  Widget get child => _child;
+  set child(Widget value) {
+    _child = value;
     notifyListeners();
   }
 
@@ -117,18 +119,14 @@ class MDController extends ChangeNotifier {
   }
 
   /// Get the controller of the parent flow
-  static MDController of(BuildContext context, {bool listen = true}) =>
-      Provider.of<MDController>(context, listen: listen);
+  static MDController of(BuildContext context, {bool listen = true}) => Provider.of<MDController>(context, listen: listen);
 
   /// Get the viewMode of the parent flow
-  static MDViewMode viewModeOf(BuildContext context) => context
-      .select<MDController, MDViewMode>((controller) => controller.viewMode);
+  static MDViewMode viewModeOf(BuildContext context) => context.select<MDController, MDViewMode>((controller) => controller.viewMode);
 
   /// Get the selected page id of the parent flow
-  static String? selectedPageIdOf(BuildContext context) => context
-      .select<MDController, String?>((controller) => controller.selectedPageId);
+  static String? selectedPageIdOf(BuildContext context) => context.select<MDController, String?>((controller) => controller.selectedPageId);
 
   /// Get the items of the parent flow
-  static List<Widget> itemsOf(BuildContext context) => context
-      .select<MDController, List<Widget>>((controller) => controller.items);
+  static Widget childOf(BuildContext context) => context.select<MDController, Widget>((controller) => controller.child);
 }

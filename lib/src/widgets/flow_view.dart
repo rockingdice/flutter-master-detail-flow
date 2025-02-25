@@ -17,7 +17,7 @@ class MDFlowView extends StatelessWidget {
   /// Creates a [MDFlowView].
   const MDFlowView({
     required this.mdTheme,
-    required this.sliverAppBar,
+    // required this.sliverAppBar,
     required this.isLateralView,
     super.key,
   });
@@ -26,7 +26,7 @@ class MDFlowView extends StatelessWidget {
   final MDThemeData? mdTheme;
 
   /// The sliver app bar to display in the master page.
-  final Widget sliverAppBar;
+  // final Widget sliverAppBar;
 
   /// Wether the flow view is in lateral or page view mode
   final bool isLateralView;
@@ -47,16 +47,13 @@ class MDFlowView extends StatelessWidget {
       detailsPanelBackgroundColor: this.mdTheme?.detailsPanelBackgroundColor,
     );
 
-    final masterPanelListTileTheme =
-        _masterPanelListTileThemeBuilder(mdTheme, colorScheme);
+    final masterPanelListTileTheme = _masterPanelListTileThemeBuilder(mdTheme, colorScheme);
     final masterPageListTileTheme = mdTheme.masterPageListTileTheme;
 
     final masterPanelWidth = mdTheme.masterPanelWidth ?? 300;
-    final transitionDuration = mdTheme.transitionAnimationDuration ??
-        const Duration(milliseconds: 500);
+    final transitionDuration = mdTheme.transitionAnimationDuration ?? const Duration(milliseconds: 500);
     final detailsPanelBorderRadius = mdTheme.detailsPanelBorderRadius ?? 12;
-    final detailsPanelBackgroundColor =
-        mdTheme.detailsPanelBackgroundColor ?? colorScheme.surfaceContainer;
+    final detailsPanelBackgroundColor = mdTheme.detailsPanelBackgroundColor ?? colorScheme.surfaceContainer;
 
     if (isLateralView) {
       return _lateralView(
@@ -70,14 +67,12 @@ class MDFlowView extends StatelessWidget {
         detailsPanelBackgroundColor,
       );
     } else {
-      final masterPageRoute =
-          _masterPageRoute(context, masterPageListTileTheme, controller.items);
+      final masterPageRoute = _masterPageRoute(context, masterPageListTileTheme, controller.child);
       return _pageView(controller, masterPageRoute);
     }
   }
 
-  MaterialPageRoute<void> _detailPageRoute(MDController controller) =>
-      MaterialPageRoute<void>(
+  MaterialPageRoute<void> _detailPageRoute(MDController controller) => MaterialPageRoute<void>(
         builder: (context) => PopScope<void>(
           onPopInvokedWithResult: (didPop, result) {
             controller.focus = MDFocus.master;
@@ -108,9 +103,7 @@ class MDFlowView extends StatelessWidget {
         // Mostly to prevent the app bar from reacting to scroll events in the
         // panel
         child: NotificationListener<Notification>(
-          onNotification: (notification) =>
-              notification is ScrollMetricsNotification ||
-              notification is ScrollNotification,
+          onNotification: (notification) => notification is ScrollMetricsNotification || notification is ScrollNotification,
           child: Padding(
             padding: const EdgeInsetsDirectional.only(
               end: 12,
@@ -120,12 +113,10 @@ class MDFlowView extends StatelessWidget {
                 viewMode: MDViewMode.lateral,
                 backgroundColor: detailsPanelBackgroundColor,
               ),
-              updateShouldNotify: (previous, current) =>
-                  previous.backgroundColor != current.backgroundColor,
+              updateShouldNotify: (previous, current) => previous.backgroundColor != current.backgroundColor,
               child: AnimatedSwitcher(
                 duration: transitionDuration,
-                transitionBuilder: (child, animation) =>
-                    const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                transitionBuilder: (child, animation) => const FadeUpwardsPageTransitionsBuilder().buildTransitions(
                   null,
                   context,
                   animation,
@@ -176,7 +167,7 @@ class MDFlowView extends StatelessWidget {
           _masterPanelBuilder(
             masterPanelListTileTheme,
             masterPanelWidth,
-            controller.items,
+            controller.child,
           ),
           _detailsPanelBuilder(
             context,
@@ -192,11 +183,11 @@ class MDFlowView extends StatelessWidget {
   MaterialPageRoute<void> _masterPageRoute(
     BuildContext context,
     ListTileThemeData? masterPageListTileTheme,
-    List<Widget> items,
+    Widget child,
   ) =>
       MaterialPageRoute<dynamic>(
         builder: (context) => _MasterPage(
-          sliverAppBar: sliverAppBar,
+          // sliverAppBar: sliverAppBar,
           listTileTheme: masterPageListTileTheme,
         ),
       );
@@ -204,17 +195,16 @@ class MDFlowView extends StatelessWidget {
   Widget _masterPanelBuilder(
     ListTileThemeData masterPanelListTileTheme,
     double masterPanelWidth,
-    List<Widget> items,
+    Widget child,
   ) =>
       ListTileTheme(
         data: masterPanelListTileTheme,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: masterPanelWidth),
-          child: ListView.builder(
-            itemBuilder: (context, index) => items[index],
-            itemCount: items.length,
-          ),
-        ),
+        child: ConstrainedBox(constraints: BoxConstraints(maxWidth: masterPanelWidth), child: child
+            // ListView.builder(
+            //   itemBuilder: (context, index) => items[index],
+            //   itemCount: items.length,
+            // ),
+            ),
       );
 
   ListTileThemeData _masterPanelListTileThemeBuilder(
@@ -222,15 +212,10 @@ class MDFlowView extends StatelessWidget {
     ColorScheme colorScheme,
   ) =>
       ListTileThemeData(
-        selectedColor: mdTheme.masterPanelListTileTheme?.selectedColor ??
-            colorScheme.onSecondaryContainer,
-        selectedTileColor:
-            mdTheme.masterPanelListTileTheme?.selectedTileColor ??
-                colorScheme.secondaryContainer,
-        iconColor: mdTheme.masterPanelListTileTheme?.iconColor ??
-            colorScheme.onSurfaceVariant,
-        textColor: mdTheme.masterPanelListTileTheme?.textColor ??
-            colorScheme.onSurface,
+        selectedColor: mdTheme.masterPanelListTileTheme?.selectedColor ?? colorScheme.onSecondaryContainer,
+        selectedTileColor: mdTheme.masterPanelListTileTheme?.selectedTileColor ?? colorScheme.secondaryContainer,
+        iconColor: mdTheme.masterPanelListTileTheme?.iconColor ?? colorScheme.onSurfaceVariant,
+        textColor: mdTheme.masterPanelListTileTheme?.textColor ?? colorScheme.onSurface,
         shape: mdTheme.masterPanelListTileTheme?.shape ??
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28),
@@ -242,15 +227,12 @@ class MDFlowView extends StatelessWidget {
             ),
         style: mdTheme.masterPanelListTileTheme?.style ?? ListTileStyle.drawer,
         dense: mdTheme.masterPanelListTileTheme?.dense,
-        horizontalTitleGap:
-            mdTheme.masterPanelListTileTheme?.horizontalTitleGap,
+        horizontalTitleGap: mdTheme.masterPanelListTileTheme?.horizontalTitleGap,
         enableFeedback: mdTheme.masterPanelListTileTheme?.enableFeedback,
-        leadingAndTrailingTextStyle:
-            mdTheme.masterPanelListTileTheme?.leadingAndTrailingTextStyle,
+        leadingAndTrailingTextStyle: mdTheme.masterPanelListTileTheme?.leadingAndTrailingTextStyle,
         minLeadingWidth: mdTheme.masterPanelListTileTheme?.minLeadingWidth,
         minTileHeight: mdTheme.masterPanelListTileTheme?.minTileHeight,
-        minVerticalPadding:
-            mdTheme.masterPanelListTileTheme?.minVerticalPadding,
+        minVerticalPadding: mdTheme.masterPanelListTileTheme?.minVerticalPadding,
         mouseCursor: mdTheme.masterPanelListTileTheme?.mouseCursor,
         subtitleTextStyle: mdTheme.masterPanelListTileTheme?.subtitleTextStyle,
         tileColor: mdTheme.masterPanelListTileTheme?.tileColor,
@@ -270,8 +252,7 @@ class MDFlowView extends StatelessWidget {
         child: Navigator(
           key: controller.navigatorKey,
           initialRoute: 'initial',
-          onGenerateInitialRoutes: (navigator, initialRoute) =>
-              switch (controller.focus) {
+          onGenerateInitialRoutes: (navigator, initialRoute) => switch (controller.focus) {
             MDFocus.master => <Route<void>>[masterPageRoute],
             MDFocus.details => <Route<void>>[
                 masterPageRoute,
@@ -325,29 +306,31 @@ class _DetailsPanelCard extends StatelessWidget {
 /// The master page that displays a sliver app bar and a list of items.
 class _MasterPage extends StatelessWidget {
   const _MasterPage({
-    required this.sliverAppBar,
+    // required this.sliverAppBar,
     required this.listTileTheme,
   });
 
-  final Widget sliverAppBar;
+  // final Widget sliverAppBar;
   final ListTileThemeData? listTileTheme;
 
   @override
   Widget build(BuildContext context) {
-    final items = MDController.itemsOf(context);
+    final child = MDController.childOf(context);
     return RepaintBoundary(
       child: BlockSemantics(
         child: ListTileTheme(
           data: listTileTheme,
-          child: CustomScrollView(
-            slivers: [
-              sliverAppBar,
-              SliverList.builder(
-                itemBuilder: (context, index) => items[index],
-                itemCount: items.length,
-              ),
-            ],
-          ),
+          child: child
+          // CustomScrollView(
+          //   slivers: [
+          //     sliverAppBar,
+          //     SliverToBoxAdapter(child: child),
+          //     // SliverList.builder(
+          //     //   itemBuilder: (context, index) => items[index],
+          //     //   itemCount: items.length,
+          //     // ),
+          //   ],
+          // ),
         ),
       ),
     );

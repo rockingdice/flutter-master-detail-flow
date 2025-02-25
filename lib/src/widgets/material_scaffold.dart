@@ -23,10 +23,11 @@ import 'package:provider/provider.dart';
 class MDScaffold extends StatefulWidget {
   /// Creates the flow
   const MDScaffold({
-    required this.items,
-    this.appBarLeading,
-    this.appBarActions,
-    this.appBarAutoImplyLeading = true,
+    // required this.items,
+    required this.child,
+    // this.appBarLeading,
+    // this.appBarActions,
+    // this.appBarAutoImplyLeading = true,
     this.breakpoint = MDBreakpoint.medium,
     this.initialPageId,
     this.initialPageBuilder,
@@ -39,14 +40,14 @@ class MDScaffold extends StatefulWidget {
   /// A widget to display before the [title].
   ///
   /// Typically the [appBarLeading] widget is an [Icon] or an [IconButton].
-  final Widget? appBarLeading;
+  // final Widget? appBarLeading;
 
   /// A list of Widgets to display in a row after the [title]
   ///
   /// Typically these widgets are [IconButton]s representing common operations.
   /// For less common operations, consider using a [PopupMenuButton] as the
   /// last action.
-  final List<Widget>? appBarActions;
+  // final List<Widget>? appBarActions;
 
   /// Controls whether the app bar should try to imply the leading widget if
   /// [appBarLeading] is null.
@@ -57,7 +58,7 @@ class MDScaffold extends StatefulWidget {
   /// has no effect.
   ///
   /// Defaults to true.
-  final bool appBarAutoImplyLeading;
+  // final bool appBarAutoImplyLeading;
 
   /// The optional title to be showed on the master detail flow.
   final Widget? title;
@@ -69,7 +70,8 @@ class MDScaffold extends StatefulWidget {
   final int breakpoint;
 
   /// The widgets to be displayed in the master list.
-  final List<Widget> items;
+  // final List<Widget> items;
+  final Widget child;
 
   /// An optional ID to specify if the masterFlow should start with a
   /// selected page. The initial page will only be shown in page mode if the
@@ -107,13 +109,12 @@ class _MDScaffoldState extends State<MDScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.items = widget.items;
+    _controller.child = widget.child;
     return LayoutBuilder(
       builder: (context, constraints) {
         final lateralView = constraints.maxWidth > widget.breakpoint;
 
-        _controller.viewMode =
-            lateralView ? MDViewMode.lateral : MDViewMode.page;
+        _controller.viewMode = lateralView ? MDViewMode.lateral : MDViewMode.page;
 
         final controlledFlow = ChangeNotifierProvider.value(
           value: _controller,
@@ -133,7 +134,7 @@ class _MDScaffoldState extends State<MDScaffold> {
   void initState() {
     super.initState();
     _controller = MDController(
-      items: widget.items,
+      child: widget.child,
       focus: widget.initialFocus,
       initialPageId: widget.initialPageId,
       initialPageBuilder: widget.initialPageBuilder,
@@ -142,8 +143,8 @@ class _MDScaffoldState extends State<MDScaffold> {
 
   @override
   void didUpdateWidget(covariant MDScaffold oldWidget) {
-    if (oldWidget.items != widget.items) {
-      _controller.items = widget.items;
+    if (oldWidget.child != widget.child) {
+      _controller.child = widget.child;
     }
 
     if (oldWidget.initialPageId == null && widget.initialPageId != null) {
@@ -156,70 +157,67 @@ class _MDScaffoldState extends State<MDScaffold> {
     super.didUpdateWidget(oldWidget);
   }
 
-  AppBar _appBar() => AppBar(
-        automaticallyImplyLeading: widget.appBarAutoImplyLeading,
-        leading: widget.appBarLeading,
-        actions: widget.appBarActions,
-        title: widget.title,
-      );
+  // AppBar _appBar() => AppBar(
+  //       automaticallyImplyLeading: widget.appBarAutoImplyLeading,
+  //       leading: widget.appBarLeading,
+  //       actions: widget.appBarActions,
+  //       title: widget.title,
+  //     );
 
-  MDFlowView _flowBuilder(BuildContext context, {required bool lateralView}) =>
-      MDFlowView(
-        sliverAppBar: _sliverAppBar(context),
+  MDFlowView _flowBuilder(BuildContext context, {required bool lateralView}) => MDFlowView(
+        // sliverAppBar: _sliverAppBar(context),
         mdTheme: widget.theme,
         isLateralView: lateralView,
       );
 
   Widget _lateralFlow(Widget flowWidget) => Scaffold(
-        appBar: _appBar(),
+        // appBar: widget.appBar,
         body: flowWidget,
       );
 
   Widget _pageFlow(Widget flowWidget) => Scaffold(body: flowWidget);
 
-  Widget _sliverAppBar(BuildContext context) {
-    final inheritedTheme = MDTheme.mayOf(context);
-    final appBarSize = widget.theme?.masterPageAppBarSize ??
-        inheritedTheme?.masterPageAppBarSize ??
-        MDAppBarSize.large;
+  // Widget _sliverAppBar(BuildContext context) {
+  //   final inheritedTheme = MDTheme.mayOf(context);
+  //   final appBarSize = widget.theme?.masterPageAppBarSize ?? inheritedTheme?.masterPageAppBarSize ?? MDAppBarSize.large;
 
-    // Since this app bar will be inside a separate navigator, we need to
-    // handle the leading button ourselves. And pop the navigation from
-    // the context of the scaffold.
-    var leading = widget.appBarLeading;
-    if (leading == null && widget.appBarAutoImplyLeading) {
-      if (ModalRoute.of(context)?.impliesAppBarDismissal ?? false) {
-        leading = BackButton(
-          onPressed: () async {
-            await Navigator.maybePop(context);
-          },
-        );
-      }
-    }
-    switch (appBarSize) {
-      case MDAppBarSize.small:
-        return SliverAppBar(
-          leading: leading,
-          actions: widget.appBarActions,
-          title: widget.title,
-          automaticallyImplyLeading: widget.appBarAutoImplyLeading,
-        );
-      case MDAppBarSize.medium:
-        return SliverAppBar.medium(
-          leading: leading,
-          actions: widget.appBarActions,
-          title: widget.title,
-          automaticallyImplyLeading: widget.appBarAutoImplyLeading,
-        );
-      case MDAppBarSize.large:
-        return SliverAppBar.large(
-          leading: leading,
-          actions: widget.appBarActions,
-          title: widget.title,
-          automaticallyImplyLeading: widget.appBarAutoImplyLeading,
-        );
-      case MDAppBarSize.none:
-        return const SliverToBoxAdapter();
-    }
-  }
+  //   // Since this app bar will be inside a separate navigator, we need to
+  //   // handle the leading button ourselves. And pop the navigation from
+  //   // the context of the scaffold.
+  //   var leading = widget.appBarLeading;
+  //   if (leading == null && widget.appBarAutoImplyLeading) {
+  //     if (ModalRoute.of(context)?.impliesAppBarDismissal ?? false) {
+  //       leading = BackButton(
+  //         onPressed: () async {
+  //           await Navigator.maybePop(context);
+  //         },
+  //       );
+  //     }
+  //   }
+  //   switch (appBarSize) {
+  //     case MDAppBarSize.small:
+  //       return SliverAppBar(
+  //         leading: leading,
+  //         actions: widget.appBarActions,
+  //         title: widget.title,
+  //         automaticallyImplyLeading: widget.appBarAutoImplyLeading,
+  //       );
+  //     case MDAppBarSize.medium:
+  //       return SliverAppBar.medium(
+  //         leading: leading,
+  //         actions: widget.appBarActions,
+  //         title: widget.title,
+  //         automaticallyImplyLeading: widget.appBarAutoImplyLeading,
+  //       );
+  //     case MDAppBarSize.large:
+  //       return SliverAppBar.large(
+  //         leading: leading,
+  //         actions: widget.appBarActions,
+  //         title: widget.title,
+  //         automaticallyImplyLeading: widget.appBarAutoImplyLeading,
+  //       );
+  //     case MDAppBarSize.none:
+  //       return const SliverToBoxAdapter();
+  //   }
+  // }
 }
