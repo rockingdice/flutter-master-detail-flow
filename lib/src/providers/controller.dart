@@ -118,6 +118,10 @@ class MDController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void slienceChangeFocus(MDFocus focus) {
+    _focus = focus;
+  }
+
   /// Get the controller of the parent flow
   static MDController of(BuildContext context, {bool listen = true}) => Provider.of<MDController>(context, listen: listen);
 

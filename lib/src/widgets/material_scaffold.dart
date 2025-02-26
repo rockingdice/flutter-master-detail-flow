@@ -154,6 +154,10 @@ class _MDScaffoldState extends State<MDScaffold> {
         preventFocusChange: true,
       );
     }
+
+    if (oldWidget.initialFocus != widget.initialFocus) {
+      _controller.slienceChangeFocus(widget.initialFocus);
+    }
     super.didUpdateWidget(oldWidget);
   }
 
